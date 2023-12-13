@@ -23,6 +23,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.smelly.seekercompass.interfaces.ClientStalkable;
 import net.smelly.seekercompass.interfaces.Stalkable;
 import net.smelly.seekercompass.mixin.client.EntityRendererInvokerMixin;
@@ -95,11 +96,15 @@ public final class StalkerEyeHandler {
 		}
 	}
 
-	public static void registerStalkingEye(RegisterGuiOverlaysEvent event){
+	public static void registerOverlay(){
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(StalkerEyeHandler::registerStalkingEye);
+	}
+
+	private static void registerStalkingEye(RegisterGuiOverlaysEvent event){
 		event.registerAboveAll("stalking_eye", StalkerEyeHandler::renderStalkingEye);
 	}
 
-	public static void renderStalkingEye(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+	private static void renderStalkingEye(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
 		if (SCConfig.CLIENT.stalkingEyeProcedure.rendersInGUI) {
 			Minecraft minecraft = Minecraft.getInstance();
 			if (!minecraft.isPaused()) {

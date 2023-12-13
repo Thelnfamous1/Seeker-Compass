@@ -1,8 +1,8 @@
 package net.smelly.seekercompass.particles;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,14 +32,13 @@ public class SCParticles {
 		PARTICLE_TYPES.register(modEventBus);
 	}
 	
-	@EventBusSubscriber(modid = SeekerCompass.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+	@EventBusSubscriber(modid = SeekerCompass.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class RegisterParticleFactories {
 		
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void registerParticleTypes(RegisterParticleProvidersEvent event) {
-			Minecraft MC = Minecraft.getInstance();
 			event.register(SEEKER_EYES.get(), SeekerEyesParticle.Factory::new);
-			MC.particleEngine.register(SEEKER_WARP.get(), SeekerWarpParticle.Factory::new);
+			event.register(SEEKER_WARP.get(), SeekerWarpParticle.Factory::new);
 		}
 		
 	}

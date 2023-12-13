@@ -113,8 +113,9 @@ public class SeekerCompass {
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
-			modEventBus.addListener(StalkerEyeHandler::registerStalkingEye);
 		});
+
+		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> StalkerEyeHandler::registerOverlay);
 	}
 
 	private void setupCommon(final FMLCommonSetupEvent event) {
