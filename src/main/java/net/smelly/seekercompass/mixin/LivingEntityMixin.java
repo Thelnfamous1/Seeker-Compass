@@ -1,7 +1,13 @@
 package net.smelly.seekercompass.mixin;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.smelly.seekercompass.SeekerCompass;
+import net.smelly.seekercompass.interfaces.ClientStalkable;
 import net.smelly.seekercompass.interfaces.Stalkable;
 import net.smelly.seekercompass.interfaces.Stalker;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,33 +19,36 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Mixin(LivingEntity.class)
-public final class LivingEntityMixin implements Stalkable {
-	private final Set<PlayerEntity> stalkers = new HashSet<>();
-	private boolean dirty;
+public abstract class LivingEntityMixin extends Entity implements Stalkable, ClientStalkable {
+	private final Set<Player> stalkers = new HashSet<>();
+
+	public LivingEntityMixin(EntityType<?> type, Level level) {
+		super(type, level);
+	}
 
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tickStalking(CallbackInfo info) {
-		if (!((LivingEntity) (Object) this).level.isClientSide) {
-			Set<PlayerEntity> stalkers = this.stalkers;
+		if (!this.level.isClientSide) {
+			Set<Player> stalkers = this.stalkers;
 			int prevSize = stalkers.size();
 			stalkers.removeIf(player -> !player.isAlive() || ((Stalker) player).getStalkingEntity() != (Object) this);
 			if (prevSize != stalkers.size()) {
-				this.setDirty(true);
+				this.setBeingStalked(this.hasStalkers());
 			}
 		}
 	}
 
 	@Override
-	public void addStalker(PlayerEntity player) {
+	public void addStalker(Player player) {
 		if (this.stalkers.add(player)) {
-			this.setDirty(true);
+			this.setBeingStalked(this.hasStalkers());
 		}
 	}
 
 	@Override
-	public void removeStalker(PlayerEntity player) {
+	public void removeStalker(Player player) {
 		if (this.stalkers.remove(player)) {
-			this.setDirty(true);
+			this.setBeingStalked(this.hasStalkers());
 		}
 	}
 
@@ -49,17 +58,17 @@ public final class LivingEntityMixin implements Stalkable {
 	}
 
 	@Override
-	public boolean isBeingStalkedBy(PlayerEntity player) {
+	public boolean isBeingStalkedBy(Player player) {
 		return this.stalkers.contains(player);
 	}
 
 	@Override
-	public void setDirty(boolean dirty) {
-		this.dirty = dirty;
+	public void setBeingStalked(boolean beingStalked) {
+		TrackedDataManager.INSTANCE.setValue(this, SeekerCompass.BEING_STALKED, beingStalked);
 	}
 
 	@Override
-	public boolean isDirty() {
-		return this.dirty;
+	public boolean isBeingStalked() {
+		return TrackedDataManager.INSTANCE.getValue(this, SeekerCompass.BEING_STALKED);
 	}
 }

@@ -1,15 +1,15 @@
 package net.smelly.seekercompass.network;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import net.minecraft.client.GameSettings;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import net.minecraft.client.Options;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import net.smelly.seekercompass.interfaces.Stalker;
 import net.smelly.seekercompass.sound.StalkingSound;
 
@@ -23,11 +23,11 @@ public final class S2CUpdateStalkerMessage {
 		this.entityId = entityId;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeInt(this.entityId);
 	}
 
-	public static S2CUpdateStalkerMessage deserialize(PacketBuffer buf) {
+	public static S2CUpdateStalkerMessage deserialize(FriendlyByteBuf buf) {
 		return new S2CUpdateStalkerMessage(buf.readInt());
 	}
 
@@ -35,7 +35,7 @@ public final class S2CUpdateStalkerMessage {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				ClientPlayerEntity player = ClientInfo.getClientPlayer();
+				LocalPlayer player = ClientInfo.getClientPlayer();
 				int id = message.entityId;
 				Stalker stalker = (Stalker) player;
 				LivingEntity prev = stalker.getStalkingEntity();
@@ -58,14 +58,14 @@ public final class S2CUpdateStalkerMessage {
 	@OnlyIn(Dist.CLIENT)
 	private static void updateClientStalking(@Nullable LivingEntity prevEntity, @Nullable LivingEntity stalkingEntity) {
 		boolean nonNull = stalkingEntity != null;
-		GameSettings options = ClientInfo.MINECRAFT.options;
+		Options options = ClientInfo.MINECRAFT.options;
 		if (nonNull) {
 			options.hideGui = true;
 		} else if (options.hideGui) {
 			options.hideGui = false;
 		}
 		if (prevEntity != stalkingEntity) {
-			ClientInfo.MINECRAFT.getSoundManager().play(new StalkingSound(nonNull));
+			ClientInfo.MINECRAFT.getSoundManager().play(new StalkingSound(nonNull, ClientInfo.getClientPlayer()));
 		}
 		if (nonNull || ClientInfo.MINECRAFT.getCameraEntity() == prevEntity) {
 			ClientInfo.MINECRAFT.setCameraEntity(stalkingEntity);

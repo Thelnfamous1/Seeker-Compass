@@ -1,15 +1,16 @@
 package net.smelly.seekercompass.network;
 
-import java.util.function.Supplier;
-
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Supplier;
 
 /**
  * Message for telling the client to spawn particles
@@ -30,7 +31,7 @@ public final class S2CParticleMessage {
 		this.motionZ = motionZ;
 	}
 	
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeUtf(this.particleName);
 		buf.writeDouble(this.posX);
 		buf.writeDouble(this.posY);
@@ -40,7 +41,7 @@ public final class S2CParticleMessage {
 		buf.writeDouble(this.motionZ);
 	}
 	
-	public static S2CParticleMessage deserialize(PacketBuffer buf) {
+	public static S2CParticleMessage deserialize(FriendlyByteBuf buf) {
 		String particleName = buf.readUtf();
 		double posX = buf.readDouble();
 		double posY = buf.readDouble();
@@ -55,11 +56,11 @@ public final class S2CParticleMessage {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				World world = ClientInfo.getClientPlayer().level;
-				BasicParticleType particleType = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
+				Level world = ClientInfo.getClientPlayer().level;
+				ParticleType<?> particleType = ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
 				
-				if (particleType != null) {
-					world.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
+				if (particleType instanceof SimpleParticleType simpleParticleType) {
+					world.addParticle(simpleParticleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 				}
 			});
 		}

@@ -1,28 +1,33 @@
 {
-  "target": "minecraft:chests/nether_bridge",
   "modifiers": [
     {
       "type": "entries",
       "config": {
-        "replace": false,
-        "index": 0,
         "entries": [
           {
             "type": "minecraft:item",
             "functions": [
               {
-                "function": "minecraft:set_count",
+                "add": false,
                 "count": {
-                  "min": 0.0,
+                  "type": "minecraft:uniform",
                   "max": 1.0,
-                  "type": "minecraft:uniform"
-                }
+                  "min": 0.0
+                },
+                "function": "minecraft:set_count"
               }
             ],
             "name": "seeker_compass:seeker_compass"
           }
-        ]
+        ],
+        "index": 0,
+        "replace": false
       }
     }
-  ]
+  ],
+  "priority": "normal",
+  "selector": {
+    "type": "empty",
+    "config": {}
+  }
 }

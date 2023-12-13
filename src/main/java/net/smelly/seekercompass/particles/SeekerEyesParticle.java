@@ -1,16 +1,11 @@
 package net.smelly.seekercompass.particles;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,11 +15,11 @@ import javax.annotation.Nullable;
  * @author SmellyModder(Luke Tonon)
  */
 @OnlyIn(Dist.CLIENT)
-public class SeekerEyesParticle extends SpriteTexturedParticle {
-	private final IAnimatedSprite animatedSprite;
+public class SeekerEyesParticle extends TextureSheetParticle {
+	private final SpriteSet animatedSprite;
 	private final float scale;
 
-	public SeekerEyesParticle(IAnimatedSprite animatedSprite, ClientWorld world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+	public SeekerEyesParticle(SpriteSet animatedSprite, ClientLevel world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		super(world, posX, posY, posZ, motionX, motionY, motionZ);
 		this.scale = this.quadSize = this.random.nextFloat() * 0.6F + 0.2F;
 		this.rCol = 1.0F;
@@ -39,7 +34,7 @@ public class SeekerEyesParticle extends SpriteTexturedParticle {
 	}
 	
 	@Override
-	public void render(IVertexBuilder p_225606_1_, ActiveRenderInfo activeInfo, float partialTicks) {
+	public void render(VertexConsumer p_225606_1_, Camera activeInfo, float partialTicks) {
 		float f = ((float) this.age + partialTicks) / (float) this.lifetime;
 		this.quadSize = this.scale * (1f - f * f * 0.5f);
 		super.render(p_225606_1_, activeInfo, partialTicks);
@@ -54,14 +49,14 @@ public class SeekerEyesParticle extends SpriteTexturedParticle {
 	}
 	
 	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 	
 	@Override
 	public int getLightColor(float partialTick) {
 		float f = ((float) this.age + partialTick) / (float) this.lifetime;
-		f = MathHelper.clamp(f, 0f, 1f);
+		f = Mth.clamp(f, 0f, 1f);
 		int i = super.getLightColor(partialTick);
 		int j = i & 255;
 		int k = i >> 16 & 255;
@@ -72,16 +67,16 @@ public class SeekerEyesParticle extends SpriteTexturedParticle {
 		return j | k << 16;
     }
 	
-	public static class Factory implements IParticleFactory<BasicParticleType> {
-		private IAnimatedSprite animatedSprite;
+	public static class Factory implements ParticleProvider<SimpleParticleType> {
+		private SpriteSet animatedSprite;
 
-		public Factory(IAnimatedSprite animatedSprite) {
+		public Factory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;
 		}
 
 		@Nullable
 		@Override
-		public Particle createParticle(BasicParticleType basicParticleType, ClientWorld world, double v, double v1, double v2, double v3, double v4, double v5) {
+		public Particle createParticle(SimpleParticleType basicParticleType, ClientLevel world, double v, double v1, double v2, double v3, double v4, double v5) {
 			return new SeekerEyesParticle(this.animatedSprite, world, v, v1, v2, v3, v4, v5);
 		}
 	}

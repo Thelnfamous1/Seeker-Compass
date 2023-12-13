@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[43,)"
 issueTrackerURL="https://github.com/SmellyModder/Seeker-Compass/issues"
 license = "https://github.com/SmellyModder/Seeker-Compass/blob/1.16.5/LICENSE"
 
@@ -15,12 +15,12 @@ license = "https://github.com/SmellyModder/Seeker-Compass/blob/1.16.5/LICENSE"
 [[dependencies.seeker_compass]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="[43.2.0,)"
     ordering="NONE"
 
 [[dependencies.seeker_compass]]
-    modId = "abnormals_core"
+    modId = "blueprint"
     mandatory = true
-    versionRange = "[3.2.0,)"
-    ordering = "AFTER"
+    versionRange = "[6.2.0,)"
+    ordering = "BEFORE"
     side = "BOTH"

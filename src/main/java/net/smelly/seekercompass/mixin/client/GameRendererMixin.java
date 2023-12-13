@@ -1,9 +1,9 @@
 package net.smelly.seekercompass.mixin.client;
 
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.smelly.seekercompass.SCConfig;
 import net.smelly.seekercompass.SeekerCompass;
 import net.smelly.seekercompass.interfaces.Stalker;

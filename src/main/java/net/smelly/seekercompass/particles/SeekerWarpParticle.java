@@ -1,19 +1,14 @@
 package net.smelly.seekercompass.particles;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,11 +16,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @author SmellyModder(Luke Tonon)
  */
 @OnlyIn(Dist.CLIENT)
-public class SeekerWarpParticle extends SpriteTexturedParticle {
-	private final IAnimatedSprite animatedSprite;
+public class SeekerWarpParticle extends TextureSheetParticle {
+	private final SpriteSet animatedSprite;
 	private final float scale;
 
-	public SeekerWarpParticle(IAnimatedSprite animatedSprite, ClientWorld world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+	public SeekerWarpParticle(SpriteSet animatedSprite, ClientLevel world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		super(world, posX, posY, posZ, motionX, motionY, motionZ);
 		this.scale = this.quadSize = 1.0F;
 		this.rCol = 1.0F;
@@ -38,14 +33,14 @@ public class SeekerWarpParticle extends SpriteTexturedParticle {
 	}
 	
 	@Override
-	public void render(IVertexBuilder buffer, ActiveRenderInfo activeInfo, float partialTicks) {
+	public void render(VertexConsumer buffer, Camera activeInfo, float partialTicks) {
 		float f = ((float) this.age + partialTicks) / (float) this.lifetime;
 		this.quadSize = this.scale * (1f - f * f * 0.5f);
 		
-		Vector3d vec3d = activeInfo.getPosition();
-		float f1 = (float)(MathHelper.lerp(partialTicks, this.xo, this.x) - vec3d.x());
-		float f2 = (float)(MathHelper.lerp(partialTicks, this.yo, this.y) - vec3d.y());
-		float f3 = (float)(MathHelper.lerp(partialTicks, this.zo, this.z) - vec3d.z());
+		Vec3 vec3d = activeInfo.getPosition();
+		float f1 = (float)(Mth.lerp(partialTicks, this.xo, this.x) - vec3d.x());
+		float f2 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - vec3d.y());
+		float f3 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - vec3d.z());
 		
 		Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
 		quaternion.mul(Vector3f.XP.rotationDegrees(90.0F));
@@ -82,8 +77,8 @@ public class SeekerWarpParticle extends SpriteTexturedParticle {
 	}
 	
 	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 	
 	@Override
@@ -91,15 +86,15 @@ public class SeekerWarpParticle extends SpriteTexturedParticle {
 		return 240;
     }
 	
-	public static class Factory implements IParticleFactory<BasicParticleType> {
-		private IAnimatedSprite animatedSprite;
+	public static class Factory implements ParticleProvider<SimpleParticleType> {
+		private SpriteSet animatedSprite;
 
-		public Factory(IAnimatedSprite animatedSprite) {
+		public Factory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;
 		}
     	
 		@Override
-		public Particle createParticle(BasicParticleType type, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new SeekerWarpParticle(this.animatedSprite, world, x, y + 0.01F, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
