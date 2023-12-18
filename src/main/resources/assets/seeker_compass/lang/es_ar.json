@@ -29,5 +29,12 @@
 	"enchantment.seeker_compass.tracking.desc": "Especifica el bloque, la posición y el bioma de la entidad rastreada.",
 	"enchantment.seeker_compass.warping.desc": "Te teletransporta hasta la entidad rastreada al utilizarlo.",
 	"enchantment.seeker_compass.summoning.desc": "Teletransporta a la entidad rastreada hasta el usuario al utilizarlo, pero solo si es invocable.",
-	"enchantment.seeker_compass.voodoo.desc": "Causa daño remoto a la entidad rastreada al utilizarlo."
+	"enchantment.seeker_compass.voodoo.desc": "Causa daño remoto a la entidad rastreada al utilizarlo.",
+	"enchantment.seeker_compass.stalking": "Stalking",
+	"enchantment.seeker_compass.stalking.desc": "See the perspective of the tracked entity at the cost of much faster durability loss.",
+	"seeker_compass.config.stalking_eye_procedure": "Stalking Eye Procedure",
+	"seeker_compass.config.enable_stalking_shader": "Enable Stalking Shader",
+	"seeker_compass.config.zombified_piglin_compass_chance": "Zombified Piglin Compass Chance",
+	"seeker_compass.config.warp_lose_compass_chance": "Warp Lose Compass Chance",
+	"seeker_compass.config.all_summoning_compass": "All Summoning Compass"
 }

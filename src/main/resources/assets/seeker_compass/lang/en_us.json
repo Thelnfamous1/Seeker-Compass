@@ -35,5 +35,7 @@
 
 	"seeker_compass.config.stalking_eye_procedure": "Stalking Eye Procedure",
 	"seeker_compass.config.enable_stalking_shader": "Enable Stalking Shader",
-	"seeker_compass.config.zombified_piglin_compass_chance": "Zombified Piglin Compass Chance"
+	"seeker_compass.config.zombified_piglin_compass_chance": "Zombified Piglin Compass Chance",
+	"seeker_compass.config.warp_lose_compass_chance": "Warp Lose Compass Chance",
+	"seeker_compass.config.all_summoning_compass": "All Summoning Compass"
 }

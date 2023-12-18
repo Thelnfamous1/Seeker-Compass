@@ -255,7 +255,7 @@ public class SeekerCompassItem extends Item {
 							SeekerCompass.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new S2CParticleMessage("seeker_compass:seeker_warp", player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F, 0.0F));
 
 							if (!player.isCreative()) {
-								if (player.getRandom().nextFloat() < 0.25F) {
+								if (player.getRandom().nextFloat() < SCConfig.COMMON.warpLoseCompassChance) {
 									stack.shrink(1);
 								}
 								stack.setDamageValue(stack.getMaxDamage());
@@ -294,7 +294,7 @@ public class SeekerCompassItem extends Item {
 		if (isNotBroken(stack) && EnchantmentHelper.getItemEnchantmentLevel(SCEnchants.SUMMONING.get(), stack) > 0 && hasTag && tag.contains(TRACKING_TAG)) {
 			if (world instanceof ServerLevel) {
 				Entity trackedEntity = this.getEntity((ServerLevel) world, stack);
-				if (trackedEntity instanceof TamableAnimal || trackedEntity.getType().is(SCTags.EntityTags.SUMMONABLES)) {
+				if (SCConfig.COMMON.allSummoningCompass || trackedEntity instanceof TamableAnimal || trackedEntity.getType().is(SCTags.EntityTags.SUMMONABLES)) {
 					if (((LivingEntity) trackedEntity).randomTeleport(placingPos.getX() + 0.5F, placingPos.getY(), placingPos.getZ() + 0.5F, false)) {
 						world.playSound(null, placingPos.getX(), placingPos.getY(), placingPos.getZ(), SoundEvents.SHULKER_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
 						SeekerCompass.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new S2CParticleMessage("seeker_compass:seeker_warp", trackedEntity.getX(), trackedEntity.getY(), trackedEntity.getZ(), 0.0F, 0.0F, 0.0F));

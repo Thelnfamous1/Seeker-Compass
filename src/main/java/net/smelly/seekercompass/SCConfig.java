@@ -22,6 +22,10 @@ public final class SCConfig {
 	public static final class Common {
 		private final ForgeConfigSpec.DoubleValue zombifiedPiglinCompassChanceValue;
 		public double zombifiedPiglinCompassChance;
+		private final ForgeConfigSpec.DoubleValue warpLoseCompassChanceValue;
+		public double warpLoseCompassChance;
+		private final ForgeConfigSpec.BooleanValue allSummoningCompassValue;
+		public boolean allSummoningCompass;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common settings for Seeker Compass.").push("common");
@@ -29,11 +33,21 @@ public final class SCConfig {
 					.comment("Chance for Zombified Piglins to naturally spawn holding a Seeker Compass. Default: 0.02")
 					.translation(makeTranslation("zombified_piglin_compass_chance"))
 					.defineInRange("zombifiedPiglinCompassChance", 0.02F, 0.0F, 1.0F);
+			this.warpLoseCompassChanceValue = builder
+					.comment("Chance for a Seeker Compass to be lost when using it to warp. Default: 0.25")
+					.translation(makeTranslation("warp_lose_compass_chance"))
+					.defineInRange("warpLoseCompassChance", 0.25, 0.0F, 1.0F);
+			this.allSummoningCompassValue = builder
+					.comment("Allow a Seeker Compass with the Summoning enchantment to work on all entities. Default: false")
+					.translation(makeTranslation("all_summoning_compass"))
+					.define("allSummoningCompass", false);
 			builder.pop();
 		}
 
 		public void load() {
 			this.zombifiedPiglinCompassChance = this.zombifiedPiglinCompassChanceValue.get();
+			this.warpLoseCompassChance = this.warpLoseCompassChanceValue.get();
+			this.allSummoningCompass = this.allSummoningCompassValue.get();
 		}
 	}
 
